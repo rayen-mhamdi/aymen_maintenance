@@ -1,0 +1,3 @@
+- filter categroy based on object choice
+- filter represtant - show only actif
+- print recu
