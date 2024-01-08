@@ -4,13 +4,30 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect 
 from django.forms import TextInput, Textarea, Select
 from simple_history.admin import SimpleHistoryAdmin
+from .utulities import ExportRecuExcelMixin
+from django.contrib.admin.actions import delete_selected
+from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
 
-class ActiveUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'is_active', 'is_staff', 'is_superuser')
+delete_selected.short_description = 'Supprimer les lignes sélectionnés'
+
+
+class ActiveUserAdmin(UserAdmin):
+    list_display = ('username', 'email', 'groupe', 'is_active', 'is_superuser')
     search_fields = ('username', )
     ordering = ('username',)
+    fieldsets = [
+        ('Informations Additionnelles', {'fields': ["email", "is_active",  "is_superuser", "groups"]}),
+        ]
+    def groupe(self, obj):
+        group_names = obj.groups.values_list('name', flat=True)
+        group_names_str = '-'.join(map(str, group_names))
+        return group_names_str
+    
+    def save_model(self, request, obj, form, change):
+        obj.is_staff = True
+        return super().save_model(request, obj, form, change)
     
 
 admin.site.unregister(User)
@@ -54,12 +71,12 @@ class StatusAdmin(admin.ModelAdmin):
     list_display = ("label", "par_default", )
 
 @admin.register(Recu)
-class RecuAdmin(SimpleHistoryAdmin):
+class RecuAdmin(SimpleHistoryAdmin, ExportRecuExcelMixin):
     autocomplete_fields = ["client", "categorie", "objet", "status",]
     search_fields = ["id", "client__nom", "categorie__famille__nom",  "categorie__nom", "objet__nom", "marque", "status__label", "modifie_a"]
     list_display = ("id", "nom_client","phone", "item", "status_label", "prix_et_reste", "observation", "cree_a", "modifie_a")
     list_per_page = 20
-    actions = ["print_action"]
+    actions = ["print_action", "export_as_excel"]
     list_filter = ["categorie__famille", "categorie", "status", "modifie_a"]
     history_list_display = ("prix", "accompte", "status", "observation", "represantant")
 
@@ -90,7 +107,7 @@ class RecuAdmin(SimpleHistoryAdmin):
     
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        form.base_fields['represantant'].queryset = User.objects.filter(is_active=True)
+        form.base_fields['represantant'].queryset = User.objects.exclude(groups__name__in=['Anonyme']).filter(is_active=True)
         return form
     
     def get_changeform_initial_data(self, request):

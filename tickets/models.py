@@ -19,7 +19,7 @@ class Categorie(models.Model):
     nom = models.CharField(max_length=200, null=False, blank=False)
     famille = models.ForeignKey(Famille, on_delete=models.CASCADE, related_name="categories")
     def __str__(self):
-        return "{} ({})".format(self.nom, self.famille.nom)
+        return "{}".format(self.nom)
     class Meta:
         verbose_name_plural = "2- Categories"
 
@@ -58,7 +58,7 @@ class Client(models.Model):
        ordering = ['id']
        
     def __str__(self):
-        return "Nom: {} Phone: {} Adresse: {}".format(self.nom, self.phone, self.adresse)
+        return "Nom: {} Phone: {} Email: {}".format(self.nom, self.phone, self.email)
     
     class Meta:
         verbose_name_plural = "5- Clients"

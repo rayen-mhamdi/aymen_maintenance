@@ -5,24 +5,17 @@ from django.template.loader import render_to_string
 from django.db.models.functions import TruncWeek, TruncMonth
 from django.utils import timezone
 from django.urls import reverse 
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+@login_required
 def print_view(request, id):
   data = Recu.objects.get(id=id)
   return render(request, 'ticket.html', {"data" : data})
 
 
-def print_view2(request):
-  return render(request, 'ticket.html')
 
-
-def get_categories(request):
-  famille_id = request.GET.get('famille_id')
-  categories = Categorie.objects.filter(famille_id=famille_id)
-  html = render_to_string('categorie_dropdown.html', {'categories': categories})
-  return JsonResponse({'html': html})
-
-
+@login_required
 def home(request):
 
   # Get today's date
@@ -52,6 +45,7 @@ def home(request):
   return render(request, 'home.html', data)
 
 
+@login_required
 def find_ticket(request):
   id_recu = request.POST.get('id_recu')
   return HttpResponseRedirect(reverse('tickets:display_ticket', args=(id_recu,))) #args is mandatory if the route have paramaters

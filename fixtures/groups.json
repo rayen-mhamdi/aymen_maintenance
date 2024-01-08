@@ -1,0 +1,85 @@
+[
+{
+    "model": "auth.group",
+    "fields": {
+        "name": "Utilisateur",
+        "permissions": [
+            [
+                "view_logentry",
+                "admin",
+                "logentry"
+            ],
+            [
+                "view_user",
+                "auth",
+                "user"
+            ],
+            [
+                "add_categorie",
+                "tickets",
+                "categorie"
+            ],
+            [
+                "view_categorie",
+                "tickets",
+                "categorie"
+            ],
+            [
+                "add_client",
+                "tickets",
+                "client"
+            ],
+            [
+                "change_client",
+                "tickets",
+                "client"
+            ],
+            [
+                "view_client",
+                "tickets",
+                "client"
+            ],
+            [
+                "view_famille",
+                "tickets",
+                "famille"
+            ],
+            [
+                "add_objet",
+                "tickets",
+                "objet"
+            ],
+            [
+                "change_objet",
+                "tickets",
+                "objet"
+            ],
+            [
+                "view_objet",
+                "tickets",
+                "objet"
+            ],
+            [
+                "add_recu",
+                "tickets",
+                "recu"
+            ],
+            [
+                "change_recu",
+                "tickets",
+                "recu"
+            ],
+            [
+                "view_recu",
+                "tickets",
+                "recu"
+            ],
+            [
+                "view_status",
+                "tickets",
+                "status"
+            ]
+        ]
+    }
+}
+]

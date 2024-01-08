@@ -38,7 +38,7 @@
       </div>
       <form class="d-flex" action="{% url 'tickets:find_ticket' %}" method="post">
         {% csrf_token %}
-        <input class="form-control me-sm-2" type="search" name="id_recu" placeholder="Numéro de récu">
+        <input class="form-control me-sm-2" type="text" name="id_recu" id="id_recu" placeholder="Numéro de récu">
         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Chercher</button>
       </form>
     </div>
@@ -145,6 +145,13 @@
   </div>
 
 </div>
-
+<script>
+  document.addEventListener('keydown', function(event) {
+    if (event.key === "/") {
+        document.getElementById('id_recu').focus();
+        event.preventDefault();
+    }
+  });
+</script>
 </body>
 </html>
