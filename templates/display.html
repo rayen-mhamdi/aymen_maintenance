@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/zephyr/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+
+  
+<div class="container">
+
+  <nav class="navbar navbar-expand-lg bg-dark mt-2 mb-5" data-bs-theme="dark">
+    <div class="container-fluid">
+      <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'tickets:home' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+          </li>
+          {% if user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link" href="#">Dashboard</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+      <form class="d-flex" action="{% url 'tickets:find_ticket' %}" method="post">
+        {% csrf_token %}
+        <input class="form-control me-sm-2" type="search" name="id_recu" placeholder="Numéro de récu">
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Chercher</button>
+      </form>
+    </div>
+  </nav>
+
+  
+  <div class="row mt-5">
+    <div class="col">
+      {% if recu %}
+        
+        <div class="row">
+          <div class="col">
+            <h2>Récu : {{id}}</h2>
+            <h6>Crée à : {{recu.cree_a}} </h6>
+            <h6>Modifié le : {{recu.modifie_a}} </h6>
+          </div>
+          <div class="col" style="text-align: right;"><a href="/print/{{id}}" target="_blank" class="btn btn-primary"> <i class="bi bi-printer-fill"></i> <span class="ml-2">Imprimer</span></a></div>
+        </div>
+        <hr>
+        <div class="table-responsive">
+          <table class="table table-hover table-sm mt-5">
+            <thead class="table-success">
+              <tr>
+                <td>Nom du Client</td>
+                <td>Téléphone</td>
+                <td>E-Mail</td>
+                <td>Adresse</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{recu.client.nom}}</td>
+                <td>{{recu.client.phone |default_if_none:""}}</td>
+                <td>{{recu.client.email |default_if_none:""}}</td>
+                <td>{{recu.client.adresse |default_if_none:""}} </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-striped table-sm mt-5">
+            <tbody>
+              <tr>
+                <td width="30%"><b>Famille</b></td>
+                <td>{{recu.categorie.famille.nom}}</td>
+              </tr>
+              <tr>
+                <td width="30%"><b>Categorie</b></td>
+                <td>{{recu.categorie.nom}}</td>
+              </tr>
+              <tr>
+                <td width="30%"><b>Objet</b></td>
+                <td>{{recu.objet.nom}}</td>
+              </tr>
+              <tr>
+                <td width="30%"><b>Marque</b></td>
+                <td>{{recu.marque}}</td>
+              </tr>
+              <tr>
+                <td width="30%"><b>Problème</b></td>
+                <td>{{recu.probleme}}</td>
+              </tr>
+              <tr>
+                <td width="30%"><b>Note</b></td>
+                <td>{{recu.note|default_if_none:""}}</td>
+              </tr>
+              <tr>
+                <td width="30%"><b>Prix</b></td>
+                <td>{{recu.prix}}</td>
+              </tr>
+              <tr>
+                <td width="30%"><b>Accompte</b></td>
+                <td>{{recu.accompte}}</td>
+              </tr>
+              <tr>
+                <td width="30%"><b>Reste</b></td>
+                <td>{{recu.get_reste}}</td>
+              </tr>
+              <tr>
+                <td width="30%"><b>Status</b></td>
+                <td>{{recu.status.label}}</td>
+              </tr>
+              <tr>
+                <td width="30%"><b>Observation</b></td>
+                <td>{{recu.observation|default_if_none:""}}</td>
+              </tr>
+              <tr>
+                <td width="30%"><b>Represantant</b></td>
+                <td>{{recu.represantant.username}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row mt-2 mb-5">
+          <div class="col" style="text-align: right;"><a href="/print/{{id}}" target="_blank" class="btn btn-primary"> <i class="bi bi-printer-fill"></i> <span class="ml-2">Imprimer</span></a></div>
+        </div>
+      {% else %}
+      <div class="alert alert-danger">
+        <strong>Attention! </strong> Récu numéro:{{ id }} est introuvable. Veuillez réessayer
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

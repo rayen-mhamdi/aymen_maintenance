@@ -1,3 +1,10 @@
-- filter categroy based on object choice
-- filter represtant - show only actif
-- print recu
+
+
+
+Objet <--> categorie <--> Sous Categorie
+https://pypi.org/project/django-admin-multi-select-filter/
+
+multiple user and permession
+
+- Bon de commande
+- notification

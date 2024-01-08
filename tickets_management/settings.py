@@ -31,14 +31,19 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "admin_interface",
+    "colorfield",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tickets'
+    'tickets',
+    'simple_history'
 ]
+X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -47,7 +52,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'tickets_management.urls'
@@ -79,6 +84,17 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+
+    # "default": {
+    #     "ENGINE": "mssql",
+    #     "NAME": "technics",
+    #     "USER": "technics",
+    #     "PASSWORD": "Aymen5610##",
+    #     "HOST": "192.168.1.200",
+    #     "PORT": "1433",
+    #     "OPTIONS": {"driver": "ODBC Driver 17 for SQL Server", 
+    #     },
+    # },
 }
 
 

@@ -26,6 +26,6 @@ admin.site.site_title = "Info Plus Récus"
 admin.site.index_title = "Info Plus - Gestion des Récus"
 
 urlpatterns = [
-    path('ticket/', include('tickets.urls')),
-    path('', admin.site.urls),
+    path('', include('tickets.urls')),
+    path('admin/', admin.site.urls)
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
