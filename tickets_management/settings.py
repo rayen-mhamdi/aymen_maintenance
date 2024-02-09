@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-p_w_eml_ol0(0y#ufx79tl93-37v!!=xtm4#xh!sv5ovqd&50n
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
+CSRF_TRUSTED_ORIGINS =['https://*.ngrok-free.app','https://*.127.0.0.1']
 
 # Application definition
 
@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tickets',
-    'simple_history'
+    'simple_history',
+    'rangefilter',
 ]
 X_FRAME_OPTIONS = "SAMEORIGIN"
 SILENCED_SYSTEM_CHECKS = ["security.W019"]
@@ -52,7 +53,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'tickets_management.middleware.DeviceSpecificSessionCookieAgeMiddleware'
 ]
 
 ROOT_URLCONF = 'tickets_management.urls'
@@ -138,3 +140,5 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/admin/'
+
+#SESSION_COOKIE_AGE = 20 #5 * 60

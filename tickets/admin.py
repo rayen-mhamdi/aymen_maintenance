@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+from .filters import IDFilter
 from .models import *
 from django.urls import reverse 
 from django.http import HttpResponseRedirect 
@@ -7,6 +9,12 @@ from simple_history.admin import SimpleHistoryAdmin
 from .utulities import ExportRecuExcelMixin
 from django.contrib.admin.actions import delete_selected
 from django.contrib.auth.admin import UserAdmin
+from rangefilter.filters import (
+    DateRangeFilterBuilder,
+    DateTimeRangeFilterBuilder,
+    NumericRangeFilterBuilder,
+    DateRangeQuickSelectListFilterBuilder,
+)
 
 # Register your models here.
 
@@ -72,12 +80,19 @@ class StatusAdmin(admin.ModelAdmin):
 
 @admin.register(Recu)
 class RecuAdmin(SimpleHistoryAdmin, ExportRecuExcelMixin):
+    exclude = ('represantant',)
     autocomplete_fields = ["client", "categorie", "objet", "status",]
-    search_fields = ["id", "client__nom", "categorie__famille__nom",  "categorie__nom", "objet__nom", "marque", "status__label", "modifie_a"]
-    list_display = ("id", "nom_client","phone", "item", "status_label", "prix_et_reste", "observation", "cree_a", "modifie_a")
+    search_fields = ["id", "client__nom", "categorie__famille__nom",  "categorie__nom", "objet__nom", "marque", "status__label", "represantant"]
+    list_display = ("id", "nom_client","phone", "item", "status_label", "prix", "accompte", "reste", "observation", "cree_a", "modifie_a")
     list_per_page = 20
     actions = ["print_action", "export_as_excel"]
-    list_filter = ["categorie__famille", "categorie", "status", "modifie_a"]
+    list_filter = [
+        IDFilter, 
+        "categorie__famille", "categorie", "status",
+        ('cree_a', DateRangeFilterBuilder(title="Crée à",)),
+        ('modifie_a', DateRangeFilterBuilder(title="Modifié le",)),
+        
+        ]
     history_list_display = ("prix", "accompte", "status", "observation", "represantant")
 
     formfield_overrides = {
@@ -90,6 +105,9 @@ class RecuAdmin(SimpleHistoryAdmin, ExportRecuExcelMixin):
     
     def prix_et_reste(self, obj):
         return "{} (reste: {}) ".format(obj.prix, obj.prix-obj.accompte)
+
+    def reste(self, obj):
+        return obj.prix-obj.accompte
     
 
     def item(self, obj):
@@ -107,7 +125,7 @@ class RecuAdmin(SimpleHistoryAdmin, ExportRecuExcelMixin):
     
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        form.base_fields['represantant'].queryset = User.objects.exclude(groups__name__in=['Anonyme']).filter(is_active=True)
+        #form.base_fields['represantant'].queryset = User.objects.exclude(groups__name__in=['Anonyme']).filter(is_active=True)
         return form
     
     def get_changeform_initial_data(self, request):
@@ -121,11 +139,16 @@ class RecuAdmin(SimpleHistoryAdmin, ExportRecuExcelMixin):
             initial['status'] = default_status
 
         return initial
+    
+    def save_model(self, request, obj, form, change):
+        # Set your field here
+        obj.represantant = request.user
+        super().save_model(request, obj, form, change)
         
     # class Media:
     #       js = ('js/recu_admin.js',)
     class Media:
         js = (
-            '//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js',  # jquery
+            'js/jquery.min.js',  # jquery
             "js/admin_addon.js",
             )

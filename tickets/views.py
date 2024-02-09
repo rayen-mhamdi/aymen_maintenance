@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from .models import *
-from django.http import JsonResponse, HttpResponseRedirect
-from django.template.loader import render_to_string
-from django.db.models.functions import TruncWeek, TruncMonth
+from django.http import HttpResponseRedirect
+from django.db.models.functions import ExtractYear, ExtractMonth, ExtractDay
 from django.utils import timezone
 from django.urls import reverse 
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from datetime import timedelta
 # Create your views here.
 
 @login_required
@@ -23,14 +24,18 @@ def home(request):
 
   # Count of Recu where cree_a is today
   today_count = Recu.objects.filter(cree_a__date=today).count()
+  # Calculate the start of the current week
+  current_week_start = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+  current_week_start -= timedelta(days=current_week_start.weekday())
 
   # Count of Recu where cree_a is in this week
-  week_count = Recu.objects.annotate(week=TruncWeek('cree_a')).filter(week=TruncWeek(timezone.now())).count()
+  week_count = Recu.objects.annotate(year=ExtractYear('cree_a'), month=ExtractMonth('cree_a'), day=ExtractDay('cree_a')).filter(year=current_week_start.year, month=current_week_start.month, day__gte=current_week_start.day).count()
+
+  # Calculate the start of the current month
+  current_month_start = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
   # Count of Recu where cree_a is in this month
-  month_count = Recu.objects.annotate(month=TruncMonth('cree_a')).filter(month=TruncMonth(timezone.now())).count()
-
-  total_count = Recu.objects.all().count()
+  month_count = Recu.objects.annotate(year=ExtractYear('cree_a'), month=ExtractMonth('cree_a'), day=ExtractDay('cree_a')).filter(year=current_month_start.year, month=current_month_start.month, day__gte=current_month_start.day).count()
 
   data = {
     "today_count" : today_count,

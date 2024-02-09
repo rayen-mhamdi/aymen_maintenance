@@ -1,0 +1,15 @@
+{% load i18n %}
+
+<h3>{% blocktrans with filter_title=title %} By {{ filter_title }} {% endblocktrans %}</h3>
+<ul>
+  <li>
+    <form method="GET" action="">
+        <input style="width : calc(100% - 15px);"
+           type="text"
+           value="{{ spec.value|default_if_none:'' }}"
+           name="{{ spec.parameter_name }}"/>
+           <input type="submit" value="Chercher" style="background: var(--admin-interface-module-background-color);    color: var(--admin-interface-module-link-color);    padding: 6px 10px;    font-size: 12px;    margin-right: 4px;">
+    </form>
+  </li>
+</ul>
+
