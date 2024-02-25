@@ -6,6 +6,13 @@ from django.contrib.auth.models import User
 
 
 
+class Adresse(models.Model):
+    zone = models.CharField(max_length=200, null=False, blank=False)
+    code_postale = models.IntegerField(null=True, blank=True)
+    def __str__(self):
+        return self.zone
+    class Meta:
+        verbose_name_plural = "Adresses"
 
 
 class Famille(models.Model):
@@ -13,7 +20,7 @@ class Famille(models.Model):
     def __str__(self):
         return self.nom
     class Meta:
-        verbose_name_plural = "1- Familles"
+        verbose_name_plural = "Familles"
 
 class Categorie(models.Model):
     nom = models.CharField(max_length=200, null=False, blank=False)
@@ -21,7 +28,7 @@ class Categorie(models.Model):
     def __str__(self):
         return "{}".format(self.nom)
     class Meta:
-        verbose_name_plural = "2- Categories"
+        verbose_name_plural = "Categories"
 
   
 class Objet(models.Model):
@@ -29,7 +36,7 @@ class Objet(models.Model):
     def __str__(self):
         return self.nom
     class Meta:
-        verbose_name_plural = "3- Objets"
+        verbose_name_plural = "Objets"
 
 class Status(models.Model):
     label = models.CharField(max_length=200, null=False, blank=False)
@@ -44,7 +51,7 @@ class Status(models.Model):
         return self.label
     
     class Meta:
-       verbose_name_plural = "4- Status"
+       verbose_name_plural = "Status"
        ordering = ['id']
 
 
@@ -52,16 +59,15 @@ class Client(models.Model):
     nom = models.CharField( max_length=200, null=False, blank=False)
     phone = models.CharField(max_length=8, null=True, blank=True)
     adresse = models.TextField(max_length=500, null=True, blank=True)
+    adresse = models.ForeignKey(Adresse, on_delete=models.SET_NULL, related_name="clients", null=True, blank=True)
     email = models.EmailField(max_length=254, null=True, blank = True)
 
-    class Meta:
-       ordering = ['id']
-       
     def __str__(self):
         return "Nom: {} Phone: {} Email: {}".format(self.nom, self.phone, self.email)
     
     class Meta:
-        verbose_name_plural = "5- Clients"
+        ordering = ['id']
+        verbose_name_plural = "Clients"
 
 class Recu(models.Model):
     client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name="recus")
@@ -79,7 +85,8 @@ class Recu(models.Model):
     
     observation = models.TextField(max_length=500, null=True, blank=True)
 
-    represantant = models.ForeignKey(User, on_delete=models.PROTECT, related_name="recus")
+    cree_par     = models.ForeignKey(User, on_delete=models.PROTECT, related_name="recus_cree_par", editable=False)
+    represantant = models.ForeignKey(User, on_delete=models.PROTECT, related_name="recus", editable=False)
 
     cree_a = models.DateTimeField(auto_now_add=True)
     modifie_a = models.DateTimeField(auto_now=True)
@@ -88,11 +95,12 @@ class Recu(models.Model):
     def get_reste(self):
         return self.prix - self.accompte
     
+    
     def __str__(self):
         return "Récu: {}".format(self.id)
     
     class Meta:
-        verbose_name_plural = "6- Récus"
+        verbose_name_plural = "Récus"
 
 
 

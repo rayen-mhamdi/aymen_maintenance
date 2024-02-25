@@ -15,7 +15,7 @@ class ExportRecuExcelMixin:
    def export_as_excel(self, request, queryset):
 
        meta = self.model._meta
-       field_names = ["Id",	"Nom client", "Phone client", "Email client",	"Famille", "Categorie",	"Objet",	"Marque",	"Probleme",	"Note",	"Prix",	"Accompte", "reste",	"status",	"Observation",	"Represantant",	"cree_a",	"modifie_a"]
+       field_names = ["Id",	"Nom client", "Phone client", "Email client", "Adresse Client",	"Famille", "Categorie",	"Objet",	"Marque",	"Probleme",	"Note",	"Prix",	"Accompte", "reste",	"status",	"Observation",	"Represantant",	"cree_a",	"modifie_a"]
 
        # Create a workbook and select the active worksheet
        wb = Workbook()
@@ -31,6 +31,7 @@ class ExportRecuExcelMixin:
                 getattr(getattr(obj, "client"), "nom"),
                 getattr(getattr(obj, "client"), "phone"),
                 getattr(getattr(obj, "client"), "email"),
+                getattr(getattr(obj, "client"), "adresse"),
                 str(getattr(getattr(obj, "categorie"), "famille")),
                 str(getattr(obj, "categorie")),
                 str(getattr(obj, "objet")),

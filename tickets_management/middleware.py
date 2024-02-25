@@ -9,6 +9,6 @@ class DeviceSpecificSessionCookieAgeMiddleware:
         if re.search(r"Mobile|Tablet", user_agent):
             request.session.set_expiry(60 * 60 * 24 * 30) # 30 days
         else:
-            request.session.set_expiry(60 * 10) # 10 minutes
+            request.session.set_expiry(60 * 5) # 5 minutes
         response = self.get_response(request)
         return response
